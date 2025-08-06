@@ -80,7 +80,7 @@ make clean  # clean obj/bin
 make docs   # generate Doxygen docs
 ```
 ## Run the programme
-./bin/crous <city> <mail@domain.com>
+./bin/crous
 
 ## Author
 Abderrahmene Kabar Ensicaen
