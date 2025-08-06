@@ -103,7 +103,8 @@ int main() {
 
         printf("Sending mail...\n");
 
-        /*system(email_cmd);*/
+        system(email_cmd);
+
         printf("Mail sent\n");
         return 0;
       } else {
