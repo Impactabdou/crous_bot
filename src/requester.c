@@ -33,13 +33,10 @@ void get_possible_localisations_request(char *query) {
   system(cmd_str);
 }
 
-void get_availability_request(char *location_cords, char *availability_request,
+void get_availability_request(char *availability_request,
+                              char location_cords_str[4][MAX_LEN],
                               size_t possibilities_size) {
   char body_req[SUPER_MAX_LEN];
-
-  char location_str[4][MAX_LEN];
-
-  extract_cords(location_cords, location_str);
 
   const char *start_req =
       "curl -X POST 'https://trouverunlogement.lescrous.fr/api/fr/search/41'   "
@@ -54,7 +51,8 @@ void get_availability_request(char *location_cords, char *availability_request,
 
   snprintf(body_req, SUPER_MAX_LEN - 1,
            "{\"lon\":%s,\"lat\":%s},{\"lon\":%s,\"lat\":%s}],\n",
-           location_str[0], location_str[1], location_str[2], location_str[3]);
+           location_cords_str[0], location_cords_str[1], location_cords_str[2],
+           location_cords_str[3]);
 
   const char *end_req = "\"residence\":null,\n"
                         "\"precision\":6,\n"
@@ -85,8 +83,8 @@ void extract_cords(char *location_cords, char location_str[4][MAX_LEN]) {
         location_cords[i] != ']' && location_cords[i] != ',') {
       location_str[turn][j++] = location_cords[i];
     } else if (location_cords[i] != ',') {
-      turn++;
       location_str[turn][j] = '\0';
+      turn++;
       j = 0;
     }
     i++;

@@ -1,6 +1,9 @@
 #include "../include/gui.h"
 #include "../include/parser.h"
 #include "../include/requester.h"
+#include <stdlib.h>
+
+#define DEV 0
 #define INTERVAL 30
 #define SAFE_LIMIT 20000000
 #define MAX_POSSIBLE_LOCATIONS 5
@@ -50,13 +53,17 @@ int main() {
 
   unsigned int number_of_req = 0;
 
+  char location_cords_str[4][MAX_LEN] = {0};
+
+  extract_cords(choice, location_cords_str);
+
   print_statement("BOT LUNCH OK", FILL_CHAR, MAX_SIZE_STATEMENT);
 
   while (number_of_req < SAFE_LIMIT) {
 
     printf("Req° %d\n", number_of_req++);
 
-    get_availability_request(choice, request, SUPER_MAX_LEN);
+    get_availability_request(request, location_cords_str, SUPER_MAX_LEN);
 
     system(request);
 
@@ -78,10 +85,11 @@ int main() {
 
     buff[strlen(buff) - 1] = '\0';
 
+    fclose(fd);
+
     if (strncmp(buff, "SON", 3) == 0) {
       print_statement("BAD NEWS", FILL_CHAR, MAX_SIZE_STATEMENT);
-      printf("This location is not handled :/\n");
-      fclose(fd);
+      printf("This location is not handled :/ , or something went wrong\n");
       break;
     } else {
       int number_of_dispo = atoi(buff);
@@ -99,14 +107,16 @@ int main() {
 
         char email_cmd[SUPER_MAX_LEN] = {0};
 
-        generate_email(email, email_cmd);
+        generate_email(email_cmd, email, location_cords_str);
 
         printf("Sending mail...\n");
 
-        system(email_cmd);
+        if (!DEV) {
+          system(email_cmd);
+        }
 
         printf("Mail sent\n");
-        return 0;
+        break;
       } else {
         print_statement("", FILL_CHAR, MAX_SIZE_STATEMENT);
         printf("Still nothing...\n");
@@ -114,13 +124,15 @@ int main() {
 
       print_statement("", FILL_CHAR, MAX_SIZE_STATEMENT);
     }
-    fclose(fd);
     sleep(INTERVAL);
   }
   free_array(locations, MAX_POSSIBLE_LOCATIONS);
   free_array(locations_cords, MAX_POSSIBLE_LOCATIONS);
 
+  system("rm -f ./ressources/*");
+
   print_statement("DON'T FORGOT TO CHECK MY GITHUB ;)", FILL_CHAR,
                   MAX_SIZE_STATEMENT);
+
   return 0;
 }
