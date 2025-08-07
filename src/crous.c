@@ -14,6 +14,8 @@ int main() {
 
   startup_page();
 
+  system("mkdir ./ressources");
+
   locations = init_array(MAX_POSSIBLE_LOCATIONS, SUPER_MAX_LEN);
   locations_cords = init_array(MAX_POSSIBLE_LOCATIONS, SUPER_MAX_LEN);
 
